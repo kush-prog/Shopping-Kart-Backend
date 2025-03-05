@@ -74,7 +74,7 @@ public class ImageController {
 	}
 	
 	@DeleteMapping("/image/{imageId}/delete")
-	public ResponseEntity<ApiResponse> deletImage(@PathVariable Long imageId){
+	public ResponseEntity<ApiResponse> deleteImage(@PathVariable Long imageId){
 		
 		try {
 			Image image = imageService.getImageById(imageId);
