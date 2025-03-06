@@ -17,7 +17,7 @@ public interface ProductService {
 	List<Product> getProductByBrand(String brand);
 	List<Product> getProductByCategoryAndBrand(String category, String brand);
 	List<Product> getProductByName(String name);
-	List<Product> getProducByBrandAndName(String category, String name);
+	List<Product> getProductByBrandAndName(String category, String name);
 	Long coutProductsByBradAndName(String brand, String name);
 	
 }
