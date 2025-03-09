@@ -30,7 +30,7 @@ import com.kush.shoppingkart.response.ApiResponse;
 
 
 @RestController
-@RequestMapping("${api.prefix/images")
+@RequestMapping("${api.prefix}/images")
 public class ImageController {
 	
 	private ImageService imageService;

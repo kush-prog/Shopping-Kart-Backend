@@ -121,7 +121,7 @@ public class ProductServiceImplementation implements ProductService{
 	}
 
 	@Override
-	public Long coutProductsByBradAndName(String brand, String name) {
+	public Long countProductsByBradAndName(String brand, String name) {
 		return productRepository.countByBrandAndName(brand, name);
 	}
 

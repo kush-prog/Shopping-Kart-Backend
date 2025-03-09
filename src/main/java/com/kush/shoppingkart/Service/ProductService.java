@@ -18,6 +18,6 @@ public interface ProductService {
 	List<Product> getProductByCategoryAndBrand(String category, String brand);
 	List<Product> getProductByName(String name);
 	List<Product> getProductByBrandAndName(String category, String name);
-	Long coutProductsByBradAndName(String brand, String name);
+	Long countProductsByBradAndName(String brand, String name);
 	
 }
