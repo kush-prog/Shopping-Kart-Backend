@@ -2,6 +2,7 @@ package com.kush.shoppingkart.Service;
 
 import java.util.List;
 
+import com.kush.shoppingkart.dtos.ProductDto;
 import com.kush.shoppingkart.model.Product;
 import com.kush.shoppingkart.request.AddProductRequest;
 import com.kush.shoppingkart.request.UpdateProductRequest;
@@ -19,5 +20,7 @@ public interface ProductService {
 	List<Product> getProductByName(String name);
 	List<Product> getProductByBrandAndName(String category, String name);
 	Long countProductsByBradAndName(String brand, String name);
-	
+
+    List<ProductDto> getConvertedProducts(List<Product> products);
+	ProductDto convertToDto(Product product);
 }

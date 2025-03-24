@@ -23,10 +23,10 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class ImageServiceImplementaion implements ImageService{
+public class ImageServiceImplementation implements ImageService{
 	
-	private ImageRepository imageRepository;
-	private ProductService productService;
+	private final ImageRepository imageRepository;
+	private final ProductService productService;
 
 	@Override
 	public Image getImageById(Long Id) {
@@ -59,7 +59,7 @@ public class ImageServiceImplementaion implements ImageService{
 				image.setImage(new SerialBlob(file.getBytes()));
 				image.setProduct(product);
 
-				String buildDownloadUrl = "/api/images/image/download";
+				String buildDownloadUrl = "/kush/shopping-kart/images/image/download/";
 				String downloadUrl = buildDownloadUrl +image.getId();
 				image.setDownloadUrl(downloadUrl);
 				imageRepository.save(image);

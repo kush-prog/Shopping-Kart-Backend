@@ -1,6 +1,7 @@
 package com.kush.shoppingkart.controllers;
 
 import com.kush.shoppingkart.Service.ProductService;
+import com.kush.shoppingkart.dtos.ProductDto;
 import com.kush.shoppingkart.exceptions.ResourceNotFoundException;
 import com.kush.shoppingkart.model.Product;
 import com.kush.shoppingkart.request.AddProductRequest;
@@ -26,6 +27,7 @@ public class ProductController {
     @GetMapping("/all")
     public ResponseEntity<ApiResponse> getAllProducts(){
         List<Product> products = productService.getAllProducts();
+        List<ProductDto> convertedProducts = productService.getConvertedProducts(products);
         return ResponseEntity.ok(new ApiResponse("Success", products));
     }
 
@@ -33,6 +35,7 @@ public class ProductController {
     public ResponseEntity<ApiResponse> geProductById(@PathVariable Long productId){
         try {
             Product product = productService.getProductById(productId);
+            ProductDto productDto = productService.convertToDto(product);
             return ResponseEntity.ok(new ApiResponse("Success", product));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));

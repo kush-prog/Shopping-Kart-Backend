@@ -3,6 +3,11 @@ package com.kush.shoppingkart.Service.Implementation;
 import java.util.List;
 import java.util.Optional;
 
+import com.kush.shoppingkart.dtos.ImageDto;
+import com.kush.shoppingkart.dtos.ProductDto;
+import com.kush.shoppingkart.model.Image;
+import com.kush.shoppingkart.repository.ImageRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import com.kush.shoppingkart.Service.ProductService;
@@ -22,6 +27,8 @@ public class ProductServiceImplementation implements ProductService{
 	
 	private final ProductRepository productRepository;
 	private final CategoryRepository categoryRepository;
+	private final ImageRepository imageRepository;
+	private final ModelMapper modelMapper;
 
 	@Override
 	public Product addProduct(AddProductRequest request) {
@@ -125,4 +132,17 @@ public class ProductServiceImplementation implements ProductService{
 		return productRepository.countByBrandAndName(brand, name);
 	}
 
+	public List<ProductDto> getConvertedProducts(List<Product> products){
+		return products.stream().map(this::convertToDto).toList();
+	}
+
+	public ProductDto convertToDto(Product product){
+		 ProductDto productDto = modelMapper.map(product, ProductDto.class);
+		 List<Image> images = imageRepository.findByProductId(product.getId());
+		 List<ImageDto> imageDtos = images.stream()
+				 .map(image -> modelMapper.map(image, ImageDto.class))
+				 .toList();
+		 productDto.setImages(imageDtos);
+		 return productDto;
+	}
 }
