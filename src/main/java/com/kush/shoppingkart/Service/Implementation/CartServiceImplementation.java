@@ -3,6 +3,7 @@ package com.kush.shoppingkart.Service.Implementation;
 import java.math.BigDecimal;
 import java.util.concurrent.atomic.AtomicLong;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import com.kush.shoppingkart.Service.CartService;
@@ -23,17 +24,22 @@ public class CartServiceImplementation implements CartService {
 
 	@Override
 	public Cart getCart(Long id) {
-		return cartRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Cart not found with ID: " + id));
+		Cart cart = cartRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Cart not found"));
+		BigDecimal totalAmount = cart.getTotalAmount();
+		cart.setTotalAmount(totalAmount);
+		return cartRepository.save(cart);
 	}
 
+
+	@Transactional
 	@Override
 	public void clearCart(Long id) {
 		Cart cart = getCart(id);
 		cartItemRepository.deleteAllByCartId(id);
 		cart.getItems().clear();
-		cart.setTotalAmount(BigDecimal.ZERO);
-		cartRepository.save(cart);
+		cartRepository.deleteById(id);
+
 	}
 
 	@Override
@@ -45,7 +51,9 @@ public class CartServiceImplementation implements CartService {
 	@Override
 	public Long initializeNewCart() {
 		Cart newCart = new Cart();
-		newCart.setTotalAmount(BigDecimal.ZERO);
+		Long newCartId = cartIdGenerator.incrementAndGet();
+		newCart.setId(newCartId);
 		return cartRepository.save(newCart).getId();
+
 	}
 }

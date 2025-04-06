@@ -1,36 +1,40 @@
 package com.kush.shoppingkart.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import lombok.NoArgsConstructor;
+
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @Entity
 public class Product {
-    
-	@Id
+
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-	private String name;
-    
-	private String brand;
-    
-	private BigDecimal price;
-    
-	private int inventory;
-    
+
+    private String name;
+
+    private String brand;
+
+    private BigDecimal price;
+
+    private int inventory;
+
     private String description;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "caategory_id")
     private Category category;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Image> images;
 
@@ -41,5 +45,18 @@ public class Product {
         this.inventory = inventory;
         this.description = description;
         this.category = category;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, brand, price, inventory);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return Objects.equals(id, product.id);
     }
 }
