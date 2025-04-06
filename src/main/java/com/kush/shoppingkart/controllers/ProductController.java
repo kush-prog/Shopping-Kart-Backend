@@ -25,11 +25,12 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping("/all")
-    public ResponseEntity<ApiResponse> getAllProducts(){
+    public ResponseEntity<ApiResponse> getAllProducts() {
         List<Product> products = productService.getAllProducts();
         List<ProductDto> convertedProducts = productService.getConvertedProducts(products);
-        return ResponseEntity.ok(new ApiResponse("Success", products));
+        return  ResponseEntity.ok(new ApiResponse("success", convertedProducts));
     }
+
 
     @GetMapping("product/{productId}/product")
     public ResponseEntity<ApiResponse> geProductById(@PathVariable Long productId){

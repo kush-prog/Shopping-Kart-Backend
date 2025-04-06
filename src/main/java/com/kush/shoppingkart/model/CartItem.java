@@ -1,36 +1,37 @@
 package com.kush.shoppingkart.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 
 @Data
 @AllArgsConstructor
-@RequiredArgsConstructor
+@NoArgsConstructor
 @Entity
+@ToString(exclude = "cart")
 public class CartItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
-
+    private Long id;
     private int quantity;
     private BigDecimal unitPrice;
     private BigDecimal totalPrice;
 
     @ManyToOne
-    @JoinColumn(name = "product_Id")
+    @JoinColumn(name = "product_id")
     private Product product;
 
+    @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "cart_Id")
+    @JoinColumn(name = "cart_id")
     private Cart cart;
-    
+
     public void setTotalPrice() {
-    	this.totalPrice = this.unitPrice.multiply(new BigDecimal(quantity));
+        this.totalPrice = this.unitPrice.multiply(new BigDecimal(quantity));
+
     }
 }
 

@@ -5,7 +5,6 @@ import com.kush.shoppingkart.exceptions.AlreadyExistsException;
 import com.kush.shoppingkart.exceptions.ResourceNotFoundException;
 import com.kush.shoppingkart.model.Category;
 import com.kush.shoppingkart.response.ApiResponse;
-import jakarta.validation.constraints.AssertTrue;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
