@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class CartServiceImplementation implements CartService {
+public class CartServiceImpl implements CartService {
 
 	private final CartRepository cartRepository;
 	private final CartItemRepository cartItemRepository;
@@ -51,9 +51,8 @@ public class CartServiceImplementation implements CartService {
 	@Override
 	public Long initializeNewCart() {
 		Cart newCart = new Cart();
-		Long newCartId = cartIdGenerator.incrementAndGet();
-		newCart.setId(newCartId);
 		return cartRepository.save(newCart).getId();
+
 
 	}
 }

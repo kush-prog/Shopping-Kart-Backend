@@ -13,7 +13,6 @@ import java.util.Objects;
 @NoArgsConstructor
 @Entity
 public class CartItem {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,28 +24,14 @@ public class CartItem {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    @JsonIgnore
-    @ToString.Exclude
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cart_id")
+    @JsonIgnore
     private Cart cart;
+
 
     public void setTotalPrice() {
         this.totalPrice = this.unitPrice.multiply(new BigDecimal(quantity));
-    }
 
-    @Override
-    public int hashCode() {
-        // Only include scalar values and product ID, not the entire product or cart
-        return Objects.hash(id, quantity, unitPrice, totalPrice,
-                (product != null ? product.getId() : null));
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        CartItem cartItem = (CartItem) o;
-        return Objects.equals(id, cartItem.id);
     }
 }

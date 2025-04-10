@@ -10,6 +10,7 @@ import com.kush.shoppingkart.model.Product;
 import com.kush.shoppingkart.repository.CartItemRepository;
 import com.kush.shoppingkart.repository.CartRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,27 +26,33 @@ public class CartItemServiceImpl implements CartItemService {
 	private final CartService cartService;
 
 	@Override
+	@Transactional
 	public void addItemToCart(Long cartId, Long productId, int quantity) {
-        Cart cart = cartService.getCart(cartId);
-        Product product = productService.getProductById(productId);
-        CartItem cartItem = cart.getItems()
-                .stream()
-                .filter(item -> item.getProduct().getId().equals(productId))
-                .findFirst().orElse(new CartItem());
-        if (cartItem.getId() == null) {
-            cartItem.setCart(cart);
-            cartItem.setProduct(product);
-            cartItem.setQuantity(quantity);
-            cartItem.setUnitPrice(product.getPrice());
-        }
-        else {
-            cartItem.setQuantity(cartItem.getQuantity() + quantity);
-        }
-        cartItem.setTotalPrice();
-        cart.addItem(cartItem);
-        cartItemRepository.save(cartItem);
-        cartRepository.save(cart);
-    }
+	    Cart cart = cartService.getCart(cartId); // Make sure this uses cartRepository.findById()
+	    Product product = productService.getProductById(productId);
+
+	    CartItem cartItem = cart.getItems().stream()
+	        .filter(item -> item.getProduct().getId().equals(productId))
+	        .findFirst()
+	        .orElse(null);
+
+	    if (cartItem == null) {
+	        cartItem = new CartItem();
+	        cartItem.setCart(cart);
+	        cartItem.setProduct(product);
+	        cartItem.setQuantity(quantity);
+	        cartItem.setUnitPrice(product.getPrice());
+	        cartItem.setTotalPrice();
+	        cart.addItem(cartItem); // Should add to cart.getItems()
+	    } else {
+	        cartItem.setQuantity(cartItem.getQuantity() + quantity);
+	        cartItem.setTotalPrice(); // update total price based on new quantity
+	    }
+
+	    // Only save the cart (if cascading is properly configured)
+	    cartRepository.save(cart);
+	}
+
 
     @Override
     public void removeItemFromCart(Long cartId, Long productId) {
@@ -76,11 +83,12 @@ public class CartItemServiceImpl implements CartItemService {
     }
 
     @Override
-    public CartItem getCartItem(Long cartId, Long productId) {
+    public CartItem getCartItem(Long cartId, Long itemId) {
         Cart cart = cartService.getCart(cartId);
-        return  cart.getItems()
-                .stream()
-                .filter(item -> item.getProduct().getId().equals(productId))
-                .findFirst().orElseThrow(() -> new ResourceNotFoundException("Item not found"));
+        return cart.getItems().stream()
+                .filter(item -> item.getId().equals(itemId))
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException("CartItem not found"));
     }
+
 }
