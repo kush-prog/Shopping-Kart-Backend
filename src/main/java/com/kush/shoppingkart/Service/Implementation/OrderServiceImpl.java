@@ -2,6 +2,7 @@ package com.kush.shoppingkart.Service.Implementation;
 
 import com.kush.shoppingkart.Service.CartService;
 import com.kush.shoppingkart.Service.OrderService;
+import com.kush.shoppingkart.dtos.OrderDto;
 import com.kush.shoppingkart.enums.OrderStatus;
 import com.kush.shoppingkart.exceptions.ResourceNotFoundException;
 import com.kush.shoppingkart.model.Cart;
@@ -11,6 +12,7 @@ import com.kush.shoppingkart.model.Product;
 import com.kush.shoppingkart.repository.OrderRepository;
 import com.kush.shoppingkart.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -25,6 +27,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
     private final CartService cartService;
+    private final ModelMapper modelMapper;
 
     @Override
     public Order placeOrder(Long userId) {
@@ -33,7 +36,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = createOrder(cart);
         List<OrderItem> orderItemList = createOrderItem(order, cart);
         order.setOrderItems(new HashSet<>(orderItemList));
-        order.setTotalAmount(calculateTotalAmoubt(orderItemList));
+        order.setTotalAmount(calculateTotalAmount(orderItemList));
         Order savedOrder = orderRepository.save(order);
 
         cartService.clearCart(cart.getId());
@@ -64,7 +67,7 @@ public class OrderServiceImpl implements OrderService {
                 }).toList();
     }
 
-    private BigDecimal calculateTotalAmoubt(List<OrderItem> orderItemList){
+    private BigDecimal calculateTotalAmount(List<OrderItem> orderItemList){
         return orderItemList
                 .stream()
                 .map(item -> item.getPrice()
@@ -73,13 +76,19 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order getOrder(Long orderId) {
+    public OrderDto getOrder(Long orderId) {
         return orderRepository.findById(orderId)
-                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+                .map(this :: convertToDto)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found!"));
     }
 
     @Override
-    public List<Order> getUserOrders(Long userId){
-        return orderRepository.findByUserId(userId);
+    public List<OrderDto> getUserOrders(Long userId){
+        List<Order> orders = orderRepository.findByUserId(userId);
+        return orders.stream().map(this :: convertToDto).toList();
+    }
+
+    private OrderDto convertToDto(Order order){
+        return modelMapper.map(order, OrderDto.class);
     }
 }
