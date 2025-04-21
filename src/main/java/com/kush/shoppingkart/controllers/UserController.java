@@ -1,6 +1,7 @@
 package com.kush.shoppingkart.controllers;
 
 import com.kush.shoppingkart.Service.UserService;
+import com.kush.shoppingkart.dtos.UserDto;
 import com.kush.shoppingkart.exceptions.AlreadyExistsException;
 import com.kush.shoppingkart.exceptions.ResourceNotFoundException;
 import com.kush.shoppingkart.model.User;
@@ -21,11 +22,12 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/user/{userId")
+    @GetMapping("/user/{userId}")
     public ResponseEntity<ApiResponse> getUserById(@PathVariable Long userId){
         try {
             User user = userService.getUserById(userId);
-            return ResponseEntity.ok(new ApiResponse("Success", user));
+            UserDto userDto = userService.convertToDto(user);
+            return ResponseEntity.ok(new ApiResponse("Success", userDto));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
         }
@@ -35,7 +37,8 @@ public class UserController {
     public ResponseEntity<ApiResponse> createUser(@RequestBody CreateUserRequest request){
         try {
             User user = userService.createUser(request);
-            return ResponseEntity.ok(new ApiResponse("User created successfully!", user));
+            UserDto userDto = userService.convertToDto(user);
+            return ResponseEntity.ok(new ApiResponse("User created successfully!", userDto));
         } catch (AlreadyExistsException e) {
             return ResponseEntity.status(CONFLICT).body(new ApiResponse(e.getMessage(), null));
         }
@@ -45,7 +48,8 @@ public class UserController {
     public ResponseEntity<ApiResponse> updateUser(@RequestBody UserUpdateResquest request, @PathVariable Long userId){
         try {
             User user = userService.updateUser(request, userId);
-            return ResponseEntity.ok(new ApiResponse("Update user Success!", user));
+            UserDto userDto = userService.convertToDto(user);
+            return ResponseEntity.ok(new ApiResponse("Update user Success!", userDto));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
         }

@@ -1,6 +1,7 @@
 package com.kush.shoppingkart.Service.Implementation;
 
 import com.kush.shoppingkart.Service.UserService;
+import com.kush.shoppingkart.dtos.UserDto;
 import com.kush.shoppingkart.exceptions.AlreadyExistsException;
 import com.kush.shoppingkart.exceptions.ResourceNotFoundException;
 import com.kush.shoppingkart.model.User;
@@ -8,6 +9,7 @@ import com.kush.shoppingkart.repository.UserRepository;
 import com.kush.shoppingkart.request.CreateUserRequest;
 import com.kush.shoppingkart.request.UserUpdateResquest;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -17,6 +19,8 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
+
     @Override
     public User getUserById(Long userId) {
         return userRepository.findById(userId)
@@ -52,4 +56,10 @@ public class UserServiceImpl implements UserService {
             throw new ResourceNotFoundException("User not found!");
         });
     }
+
+    @Override
+    public UserDto convertToDto(User user){
+        return modelMapper.map(user, UserDto.class);
+    }
+
 }
