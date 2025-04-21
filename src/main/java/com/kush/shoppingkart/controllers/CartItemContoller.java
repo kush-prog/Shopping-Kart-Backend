@@ -2,7 +2,10 @@ package com.kush.shoppingkart.controllers;
 
 import com.kush.shoppingkart.Service.CartItemService;
 import com.kush.shoppingkart.Service.CartService;
+import com.kush.shoppingkart.Service.UserService;
 import com.kush.shoppingkart.exceptions.ResourceNotFoundException;
+import com.kush.shoppingkart.model.Cart;
+import com.kush.shoppingkart.model.User;
 import com.kush.shoppingkart.response.ApiResponse;
 
 import lombok.RequiredArgsConstructor;
@@ -18,16 +21,16 @@ public class CartItemContoller {
 
     private final CartItemService cartItemService;
     private final CartService cartService;
+    private final UserService userService;
 
     @PostMapping("/item/add")
-    public ResponseEntity<ApiResponse> addItemToCart(@RequestParam(required = false) Long cartId,
+    public ResponseEntity<ApiResponse> addItemToCart(
                                                      @RequestParam Long productId,
                                                      @RequestParam Integer quantity) {
         try {
-            if (cartId == null) {
-                cartId= cartService.initializeNewCart();
-            }
-            cartItemService.addItemToCart(cartId, productId, quantity);
+            User user = userService.getUserById(1L);
+            Cart cart= cartService.initializeNewCart(user);
+            cartItemService.addItemToCart(cart.getId(), productId, quantity);
             return ResponseEntity.ok(new ApiResponse("Add Item Success", null));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));

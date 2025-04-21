@@ -1,8 +1,10 @@
 package com.kush.shoppingkart.Service.Implementation;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.kush.shoppingkart.model.User;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -49,9 +51,13 @@ public class CartServiceImpl implements CartService {
 	}
 
 	@Override
-	public Long initializeNewCart() {
-		Cart newCart = new Cart();
-		return cartRepository.save(newCart).getId();
+	public Cart initializeNewCart(User user) {
+		return Optional.ofNullable(getCartByUserId(user.getId()))
+				.orElseGet(() -> {
+					Cart cart = new Cart();
+					cart.setUser(user);
+					return cartRepository.save(cart);
+				});
 	}
 
 	@Override

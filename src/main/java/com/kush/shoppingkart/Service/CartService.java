@@ -3,6 +3,7 @@ package com.kush.shoppingkart.Service;
 import java.math.BigDecimal;
 
 import com.kush.shoppingkart.model.Cart;
+import com.kush.shoppingkart.model.User;
 
 public interface CartService {
 	
@@ -10,7 +11,7 @@ public interface CartService {
 	void clearCart(Long Id);
 	BigDecimal getTotalPrice(Long Id);
 
-	Long initializeNewCart();
+    Cart initializeNewCart(User user);
 
     Cart getCartByUserId(Long userId);
 }
