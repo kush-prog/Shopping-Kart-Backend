@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import com.kush.shoppingkart.dtos.ImageDto;
 import com.kush.shoppingkart.dtos.ProductDto;
+import com.kush.shoppingkart.exceptions.AlreadyExistsException;
 import com.kush.shoppingkart.model.Image;
 import com.kush.shoppingkart.repository.ImageRepository;
 import org.modelmapper.ModelMapper;
@@ -36,7 +37,11 @@ public class ProductServiceImplementation implements ProductService{
 		// If Yes, set it as the new product category
 		// If No, then save it as a new category
 		// Then set as the new product category.
-		
+
+		if(productExists(request.getName(), request.getBrand())){
+			throw new AlreadyExistsException(request.getBrand() + " " + request.getName() + " already exists, you may update this product instead!");
+		}
+
 		Category category = Optional.ofNullable(categoryRepository.findByName(request.getCategory().getName()))
                 .orElseGet(() -> {
                     Category newCategory = new Category(request.getCategory().getName());
@@ -44,6 +49,10 @@ public class ProductServiceImplementation implements ProductService{
                 });
         request.setCategory(category);
         return productRepository.save(createProduct(request, category));
+	}
+
+	private boolean productExists(String name, String brand){
+		return productRepository.existsByNameAndBrand(name, brand);
 	}
 	
 	private Product createProduct(AddProductRequest request, Category category) {

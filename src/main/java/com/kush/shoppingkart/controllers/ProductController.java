@@ -2,6 +2,7 @@ package com.kush.shoppingkart.controllers;
 
 import com.kush.shoppingkart.Service.ProductService;
 import com.kush.shoppingkart.dtos.ProductDto;
+import com.kush.shoppingkart.exceptions.AlreadyExistsException;
 import com.kush.shoppingkart.exceptions.ResourceNotFoundException;
 import com.kush.shoppingkart.model.Product;
 import com.kush.shoppingkart.request.AddProductRequest;
@@ -14,8 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -49,8 +49,8 @@ public class ProductController {
             Product theproduct = productService.addProduct(product);
             ProductDto productDto = productService.convertToDto(theproduct);
             return ResponseEntity.ok(new ApiResponse("Product added successfully.", productDto));
-        } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
+        } catch (AlreadyExistsException e) {
+            return ResponseEntity.status(CONFLICT).body(new ApiResponse(e.getMessage(), null));
         }
     }
 
