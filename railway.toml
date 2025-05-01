@@ -1,5 +1,0 @@
-[build]
-command = "./mvnw -B clean install"
-
-[deploy]
-start = "java -jar target/*.jar"
