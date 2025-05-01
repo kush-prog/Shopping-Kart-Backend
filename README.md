@@ -1,4 +1,4 @@
-# Shopping Kart API Documentation
+# Shopping Kart API End points
 
 Base URL: `https://shopping-kart-backend-production.up.railway.app/kush/shopping-kart`
 
