@@ -1,21 +1,26 @@
-[build 5/7] RUN ./mvnw dependency:go-offline -B 
-process "/bin/sh -c ./mvnw dependency:go-offline -B" did not complete successfully: exit code: 126
- 
+# Stage 1: Build the app using Maven wrapper
+FROM maven:3.9.5-eclipse-temurin-17 AS build
+WORKDIR /app
 
-Dockerfile:10
+# Copy the Maven wrapper and config first (to leverage Docker cache)
+COPY .mvn/ .mvn
+COPY mvnw pom.xml ./
 
--------------------
+# Ensure mvnw has the correct executable permission
+RUN chmod +x mvnw
 
-8 |
+# Download dependencies
+RUN ./mvnw dependency:go-offline -B
 
-9 |     # Download dependencies first
+# Copy the source code
+COPY src ./src
 
-10 | >>> RUN ./mvnw dependency:go-offline -B
+# Build the application (skip tests for faster builds)
+RUN ./mvnw clean package -DskipTests
 
-11 |
-
-12 |     # Copy the rest of the source code
-
--------------------
-
-ERROR: failed to solve: process "/bin/sh -c ./mvnw dependency:go-offline -B" did not complete successfully: exit code: 126
+# Stage 2: Run the app using JDK 17
+FROM eclipse-temurin:17-jdk-alpine
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]
