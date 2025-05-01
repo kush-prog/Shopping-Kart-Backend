@@ -1,4 +1,4 @@
-package com.kush.shoppingkart.config;
+package com.kush.shoppingkart.configurations;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
