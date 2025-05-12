@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Data initializer and role repository ####
+src/main/java/com/kush/shppingkart/data/
