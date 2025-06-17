@@ -1,6 +1,6 @@
 package com.kush.shoppingkart.configurations.jwt;
 
-import com.kush.shoppingkart.Service.Implementation.CustomUserDetails;
+import com.kush.shoppingkart.Service.Implementation.ShopUserDetails;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -20,7 +20,7 @@ public class JWTUtils {
     private int expirationTime = 1000 * 60 * 60 * 1; // 1 hour
 
     public String generateTokerForUser(Authentication authentication){
-        CustomUserDetails userPrincipal = (CustomUserDetails) authentication.getPrincipal();
+        ShopUserDetails userPrincipal = (ShopUserDetails) authentication.getPrincipal();
         List<String> roles = userPrincipal.getAuthorities()
                 .stream()
                 .map(GrantedAuthority::getAuthority).toList();

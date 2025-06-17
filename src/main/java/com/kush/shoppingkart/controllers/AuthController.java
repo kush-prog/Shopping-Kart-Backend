@@ -1,6 +1,6 @@
 package com.kush.shoppingkart.controllers;
 
-import com.kush.shoppingkart.Service.Implementation.CustomUserDetails;
+import com.kush.shoppingkart.Service.Implementation.ShopUserDetails;
 import com.kush.shoppingkart.configurations.jwt.JWTUtils;
 import com.kush.shoppingkart.request.LoginRequest;
 import com.kush.shoppingkart.response.ApiResponse;
@@ -36,7 +36,7 @@ public class AuthController {
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
             String jwt = jwtUtils.generateTokerForUser(authentication);
-            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+            ShopUserDetails userDetails = (ShopUserDetails) authentication.getPrincipal();
             JwtResponse jwtResponse = new JwtResponse(userDetails.getId(), jwt);
 
             return ResponseEntity.ok(new ApiResponse("Login Successful", jwtResponse));

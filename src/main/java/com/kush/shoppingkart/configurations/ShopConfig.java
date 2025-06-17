@@ -1,7 +1,8 @@
 package com.kush.shoppingkart.configurations;
 
-import com.kush.shoppingkart.Service.Implementation.UserDetailsService;
+import com.kush.shoppingkart.Service.Implementation.ShopUserDetailsService;
 import com.kush.shoppingkart.configurations.jwt.AuthTokenFilter;
+import com.kush.shoppingkart.configurations.jwt.JWTUtils;
 import com.kush.shoppingkart.configurations.jwt.JwtAuthEntryPoints;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -27,8 +28,9 @@ import java.util.List;
 @Configuration
 @EnableMethodSecurity(prePostEnabled = true)
 public class ShopConfig {
-    private final UserDetailsService userDetailsService;
+    private final ShopUserDetailsService userDetailsService;
     private final JwtAuthEntryPoints authEntryPoints;
+    private final JWTUtils jwtUtils;
 
     private static final List<String> SECURED_URLS =
             List.of("/kush/shopping-kart/carts/**", "/kush/shopping-kart/cartItems/**");
@@ -44,9 +46,10 @@ public class ShopConfig {
     }
 
     @Bean
-    public AuthTokenFilter authTokenFilter(){
-        return new AuthTokenFilter();
+    public AuthTokenFilter authTokenFilter() {
+        return new AuthTokenFilter(jwtUtils, userDetailsService);
     }
+
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {

@@ -17,20 +17,20 @@ import java.util.stream.Collectors;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CustomUserDetails implements UserDetails {
+public class ShopUserDetails implements UserDetails {
 
     private Long id;
     private String email;
     private String password;
     private Collection<GrantedAuthority> authorities;
 
-    public static CustomUserDetails buildUserDetails(User user){
+    public static ShopUserDetails buildUserDetails(User user){
         List<GrantedAuthority> authorities = user.getRoles()
                 .stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName()))
                 .collect(Collectors.toList());
 
-        return new CustomUserDetails(
+        return new ShopUserDetails(
                 user.getId(),
                 user.getEmail(),
                 user.getPassword(),
