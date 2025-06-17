@@ -16,7 +16,7 @@ import java.util.List;
 
 @Component
 public class JWTUtils {
-    private String jwtSecret = "sample_secret_key";
+    private String jwtSecret = "bXlTZWNyZXRLZXlGb3JKV1RUb2tlbkdlbmVyYXRpb25UaGF0SXNMb25nRW5vdWdoQW5kU2VjdXJlMTIzNDU2Nzg5MA==";
     private int expirationTime = 1000 * 60 * 60 * 1; // 1 hour
 
     public String generateTokerForUser(Authentication authentication){
@@ -32,8 +32,8 @@ public class JWTUtils {
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + expirationTime))
                 .signWith(key(), SignatureAlgorithm.HS256).compact();
-
     }
+
     private Key key(){
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
     }
@@ -47,7 +47,6 @@ public class JWTUtils {
     }
 
     public boolean validateToken(String token){
-
         try {
             Jwts.parser()
                     .setSigningKey(key())

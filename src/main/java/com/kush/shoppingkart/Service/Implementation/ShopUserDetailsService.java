@@ -15,10 +15,24 @@ public class ShopUserDetailsService implements org.springframework.security.core
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        System.out.println("=== UserDetailsService called ===");
+        System.out.println("Attempting to load user by email: " + email);
+        
         User user = userRepository.findByEmail(email);
         if (user == null) {
-            throw new UsernameNotFoundException("User not found!");
+            System.out.println("User not found with email: " + email);
+            throw new UsernameNotFoundException("User not found with email: " + email);
         }
-        return ShopUserDetails.buildUserDetails(user);
+        
+        System.out.println("User found: " + user.getEmail());
+        System.out.println("User password hash: " + user.getPassword());
+        System.out.println("User roles: " + user.getRoles());
+        
+        ShopUserDetails userDetails = ShopUserDetails.buildUserDetails(user);
+        System.out.println("UserDetails created successfully");
+        System.out.println("UserDetails username: " + userDetails.getUsername());
+        System.out.println("UserDetails authorities: " + userDetails.getAuthorities());
+        
+        return userDetails;
     }
 }
